@@ -6,15 +6,11 @@ export function getAllServers(ns) {
 
     function scanMore(server) {
         ns.scan(server).forEach(server => {
-            if (own.includes(server)) {
-                if (!list.private.includes(server)) {
-                    list.private.push(server);
-                }
-            } else {
-                if (!list.public.includes(server)) {
+            if (own.includes(server) && !list.private.includes(server)) {
+                list.private.push(server);
+            } else if (!list.public.includes(server)) {
                     list.public.push(server);
                     scanMore((server));
-                }
             }
         })
     }
