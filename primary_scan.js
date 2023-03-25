@@ -9,8 +9,8 @@ export function getAllServers(ns) {
             if (own.includes(server) && !list.private.includes(server)) {
                 list.private.push(server);
             } else if (!list.public.includes(server)) {
-                    list.public.push(server);
-                    scanMore((server));
+                list.public.push(server);
+                scanMore((server));
             }
         })
     }
