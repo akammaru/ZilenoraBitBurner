@@ -1,48 +1,40 @@
 /** @param {NS} ns */
 export function main(ns) {
-    let structure = scanServer(ns, 'home');
-    printStructure(ns, structure);
+    ns.tprint(scanServers(ns));
 }
 
-function scanServer(ns, target, alreadyFound, counter = 0, targetParent = 'home') {
-    let structure = {};
-    let currentLocation = ns.scan(target);
-    alreadyFound = alreadyFound ?? [];
-    let indicatorString = "";
+// todo: print clear view of all servers
+// todo: print each file on the server
+// split gaining the intel and printing it.
+function scanServers(ns) {
+    let list = [];
+    let own = ns.getPurchasedServers();
+    own.push('home'); // add home to own server.
 
-    for(let i = 0; i <= counter; i++) {
-        indicatorString = indicatorString + '-';
-    }
+    let serverScructure = {};
+    function scanMore(server, count = 0, parentServer = '') {
+        let depth = count + 1;
+        let scannedServers = ns.scan(server);
+        serverScructure[server] = [depth, ...scannedServers];
+        list.push(server);
 
-    currentLocation.forEach(server => {
-        if (!alreadyFound.includes(server)) {
-            alreadyFound.push(server);
-            structure[server] = scanServer(ns, server, alreadyFound, counter, targetParent);
+        let indicatorString = '';
+        for(let i = 0; i <= depth; i++) {
+            indicatorString = indicatorString + '-';
         }
-    })
-
-    return structure;
-}
-
-function printStructure(ns, structure, iteration = 0) {
-    iteration++;
-    let keys = Object.keys(structure);
-    let indicator = '';
-
-    for (let i = 0; i <= iteration; i++) {
-        indicator = indicator + '-';
-    }
-
-
-    keys.forEach(server => {
-        if (iteration !== 1) {
-            ns.tprint(indicator + '> ' + server)
+        let baseString = indicatorString + '> ';
+        ns.tprint(baseString + server);
+        ns.tprint('root access: ' + ns.hasRootAccess(server));
+        if (server !== 'home') {
+            ns.tprint('files: ' + ns.ls(server));
+            ns.tprint('parent server: ' + parentServer);
         }
-        printStructure(server);
-    });
-    ns.tprint(keys)
-}
 
-// I have a list
-// current -> has array of servers
-// I want to show child servers.
+        scannedServers.forEach(relatedServer => {
+            if (!own.includes(relatedServer) && !list.includes(relatedServer)) {
+                scanMore(relatedServer, depth, server);
+            }
+        });
+    }
+    scanMore('home');
+}
