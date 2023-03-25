@@ -5,16 +5,12 @@ export function getAllServers(ns) {
     own.push('home');
 
     function scanMore(server) {
-            ns.scan(server).forEach(server => {
-            if (own.includes(server)) {
-                if (!list.private.includes(server)) {
-                    list.private.push(server);
-                }
-            } else {
-                if (!list.public.includes(server)) {
-                    list.public.push(server);
-                    scanMore((server));
-                }
+        ns.scan(server).forEach(server => {
+            if (own.includes(server) && !list.private.includes(server)) {
+                list.private.push(server);
+            } else if (!list.public.includes(server)) {
+                list.public.push(server);
+                scanMore((server));
             }
         })
     }

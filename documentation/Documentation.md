@@ -19,9 +19,6 @@ Starts a fully automated script to:
 ### database_management.js
 functions to write and retrieve data from a file based database structure.
 
-### getServerStructure.js
-WIP once done, will print a complete readout of the scan network (more than what scan-analyze can do)
-
 ### managed_hack.js
 handles all the growing, weakening and hacking on all servers.
 
