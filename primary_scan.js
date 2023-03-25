@@ -5,7 +5,7 @@ export function getAllServers(ns) {
     own.push('home');
 
     function scanMore(server) {
-            ns.scan(server).forEach(server => {
+        ns.scan(server).forEach(server => {
             if (own.includes(server)) {
                 if (!list.private.includes(server)) {
                     list.private.push(server);
