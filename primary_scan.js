@@ -1,16 +1,12 @@
 /** @param {NS} ns */
 export function getAllServers(ns) {
-    let list = {private: [], public: []};
-    let own = ns.getPurchasedServers();
-    own.push('home');
-
+    let list = {private: ns.getPurchasedServers(), public: []};
+    list.private.push('home');
     function scanMore(server) {
-        ns.scan(server).forEach(server => {
-            if (own.includes(server) && !list.private.includes(server)) {
-                list.private.push(server);
-            } else if (!list.public.includes(server)) {
-                list.public.push(server);
-                scanMore((server));
+        ns.scan(server).forEach(foundServer => {
+            if (!list.private.includes(foundServer) && !list.public.includes(foundServer)) {
+                list.public.push(foundServer);
+                scanMore(foundServer);
             }
         })
     }
